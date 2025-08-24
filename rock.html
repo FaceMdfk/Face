@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pa yary🎸</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+    color: #fff;
+    text-align: center;
+    position: relative;
+  }
+
+  h1 {
+    font-size: 3rem;
+    background: linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove 5s infinite linear;
+    z-index: 1;
+    position: relative;
+  }
+
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+
+  #subtitle {
+    margin-top: 2rem;
+    font-size: 1.2rem;
+    white-space: pre-line;
+    min-height: 200px;
+    z-index: 1;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+
+  .btn {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    color: #fff;
+    background: linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 1;
+    position: relative;
+  }
+
+  .btn:hover { transform: scale(1.1); }
+
+  .centered-img {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: auto;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    animation: blink 1s infinite alternate;
+    pointer-events: none;
+    transition: all 1s ease;
+  }
+
+
+  .fullscreen {
+    width: 100vw !important;
+    height: 100vh !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    object-fit: cover;
+  }
+
+  @keyframes blink {
+    0% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
+  }
+
+
+  #progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: rgba(255,255,255,0.1);
+    z-index: 20;
+  }
+
+  #progress-bar {
+    width: 0%;
+    height: 100%;
+    background: red;
+    transition: width 0.1s linear;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="progress-container">
+  <div id="progress-bar"></div>
+</div>
+
+<div>
+  <h1>Q CTM LA CUMPLEAÑERA 🎸</h1>
+  <p id="subtitle"></p>
+  <button class="btn" onclick="startSong()">Reproducir Canción</button>
+</div>
+
+<img id="centeredImg" src="https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUyNDg3cjdiMXR2NWxjcjNib3hueGt1cTB6ajU3eHd4MXQzOHdiaDQzYSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/OlASCtKlMWXXX9TYQB/giphy.gif" 
+     alt="Centrada" 
+     class="centered-img">
+
+<audio id="music">
+  <source src="songs/a.mp3" type="audio/mpeg">
+  Tu navegador no soporta audio.
+</audio>
+
+<script>
+const subtitleText = `
+I wanna dance, I wanna dance in the lights.
+I wanna rock, I wanna rock your body.
+I wanna go, I wanna go for a ride.
+Hop in the music and rock your body.
+I wanna dance, I wanna dance in the lights.
+I wanna rock, I wanna rock your body.
+I wanna go, I wanna go for a ride.
+Hop in the music and rock your body.
+Rock your body.
+Come on, come on, rock your body.
+Rock your body.
+Rock your body.
+Come on, come on, rock your body.
+Rock your body.
+Come on, come on, rock your body.
+Let me see your body rock.
+Shaking it from the bottom to the top.
+Reach to what the DJ drop.
+We be the ones to make it hot.
+Electric shock.
+Energy like a billion watts.
+Space be booming, the speakers pop.
+Galactic, call me Mr. Spot.
+We're bumping in your parking lot.
+When you coming up in the spot.
+Don't bring nothing, we call pink dot.
+Cause we burning around the clock.
+Hit the lights and then turn them off.
+If you're green, I don't make you soft.
+Like the jungle, we run the block.
+No one rolling the way we rock.
+Way we rock.
+I wanna dance, I wanna dance in the lights.
+I wanna rock, I wanna rock your body.
+I wanna go, I wanna go for a ride.
+Hop in the music and rock your body.
+Rock your body.
+Come on, come on, rock your body.
+Rock your body.
+Rock your body.
+Come on, come on, rock your body.
+Rock your body.
+Rock your body.
+Come on, come on, rock your body.
+Rock your body.
+Rock your body.
+Come on, come on, rock your body.
+Rock your body.
+Rock your body.
+Come on, come on, rock your body.
+Rock your body.
+Rock your body.
+Come on, come on, rock your body.
+Rock your body.
+Rock your body.
+Come on, come on, rock your body.🎶
+`;
+
+const subtitleEl = document.getElementById("subtitle");
+const music = document.getElementById("music");
+const progressBar = document.getElementById("progress-bar");
+const centeredImg = document.getElementById("centeredImg");
+
+let i = 0;
+const speed = 60;
+let colorInterval;
+
+function changeColor() {
+  const r = Math.floor(Math.random()*256);
+  const g = Math.floor(Math.random()*256);
+  const b = Math.floor(Math.random()*256);
+  subtitleEl.style.color = `rgb(${r},${g},${b})`;
+}
+
+function typeWriter() {
+  if (i < subtitleText.length) {
+    subtitleEl.textContent += subtitleText.charAt(i);
+    i++;
+    const percent = Math.floor((i / subtitleText.length) * 100);
+    progressBar.style.width = percent + '%';
+    setTimeout(typeWriter, speed);
+  } else {
+    clearInterval(colorInterval);
+    progressBar.style.width = '100%';
+    // Cuando termine, hacer la imagen pantalla completa
+    centeredImg.classList.add('fullscreen');
+  }
+}
+
+function startSong() {
+  music.currentTime = 0;
+  music.play();
+  subtitleEl.textContent = '';
+  i = 0;
+  typeWriter();
+  if(colorInterval) clearInterval(colorInterval);
+  colorInterval = setInterval(changeColor, 200);
+  music.loop = false;
+}
+</script>
+
+</body>
+</html>
